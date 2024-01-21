@@ -1,65 +1,52 @@
-#!/bin/bash
+#! /usr/bin/bash
 
-#set -e
+# CHANGE THE PATH TO YOUR TOOLCHAINS
 
-KERNEL_DEFCONFIG=alioth_defconfig
-ANYKERNEL3_DIR=$PWD/AnyKernel3/
-FINAL_KERNEL_ZIP=InfiniR_Alioth_v2.83.zip
-export ARCH=arm64
+# ===----------------------------------------------=== #
+# This script is used to build android kernel for mi10 #
+# ===----------------------------------------------=== #
 
-# Speed up build process
-MAKE="./makeparallel"
+TOOLCHAIN_PATH="/home/yttehs/Project/Kernel-Dev/toolchains"
 
-BUILD_START=$(date +"%s")
-blue='\033[1;34m'
-yellow='\033[1;33m'
-nocol='\033[0m'
+CLANG_VERSION="17"
+GCC_VERSION="4.9"
 
-# Always do clean build lol
-echo -e "$yellow**** Cleaning ****$nocol"
-mkdir -p out
-make O=out clean
+CLANG_PATH="${TOOLCHAIN_PATH}/zyc-${CLANG_VERSION}/bin"
+GCC32_PATH="${TOOLCHAIN_PATH}/gcc32-${GCC_VERSION}/bin"
+GCC_PATH="${TOOLCHAIN_PATH}/gcc-${GCC_VERSION}/bin"
 
-echo -e "$yellow**** Kernel defconfig is set to $KERNEL_DEFCONFIG ****$nocol"
-echo -e "$blue***********************************************"
-echo "          BUILDING KERNEL          "
-echo -e "***********************************************$nocol"
-make $KERNEL_DEFCONFIG O=out
-make -j$(nproc --all) O=out \
-                      ARCH=arm64 \
-                      CC=/home/raystef66/kernel/prebuilts/clang-r445002/bin/clang \
-                      CLANG_TRIPLE=aarch64-linux-gnu- \
-                      CROSS_COMPILE=/home/raystef66/kernel/prebuilts/aarch64-linux-android-4.9/bin/aarch64-linux-android- \
-                      CROSS_COMPILE_ARM32=/home/raystef66/kernel/prebuilts/arm-linux-androideabi-4.9/bin/arm-linux-androideabi-
+echo "[!] setting up environment"
 
-echo -e "$yellow**** Verify Image.gz-dtb & dtbo.img ****$nocol"
-ls $PWD/out/arch/arm64/boot/Image.gz-dtb
-ls $PWD/out/arch/arm64/boot/dtbo.img
+echo "[+] clang path: ${CLANG_PATH}"
+echo "[+] gcc32 path: ${GCC32_PATH}"
+echo "[+] gcc path: ${GCC_PATH}"
 
-echo -e "$yellow**** Verifying AnyKernel3 Directory ****$nocol"
-ls $ANYKERNEL3_DIR
-echo -e "$yellow**** Removing leftovers ****$nocol"
-rm -rf $ANYKERNEL3_DIR/Image.gz-dtb
-rm -rf $ANYKERNEL3_DIR/dtbo.img
-rm -rf $ANYKERNEL3_DIR/$FINAL_KERNEL_ZIP
+export PATH="${CLANG_PATH}:${GCC32_PATH}:${GCC_PATH}:${PATH}"
 
-echo -e "$yellow**** Copying Image.gz-dtb & dtbo.img ****$nocol"
-cp $PWD/out/arch/arm64/boot/Image.gz-dtb $ANYKERNEL3_DIR/
-cp $PWD/out/arch/arm64/boot/dtbo.img $ANYKERNEL3_DIR/
+args="-j$(nproc --all) \
+O=out \
+ARCH=arm64 \
+CROSS_COMPILE=aarch64-linux-gnu- \
+CROSS_COMPILE_ARM32=arm-linux-androideabi- \
+CLANG_TRIPLE=aarch64-linux-gnu- \
+CC=clang \
+LD=ld.lld \
+AR=llvm-ar \
+NM=llvm-nm \
+OBJCOPY=llvm-objcopy \
+OBJDUMP=llvm-objdump \
+READELF=llvm-readelf \
+OBJSIZE=llvm-size \
+STRIP=llvm-strip \
+LDGOLD=aarch64-linux-gnu-ld.gold \
+LLVM_AR=llvm-ar \
+LLVM_DIS=llvm-dis"
 
-echo -e "$yellow**** Time to zip up! ****$nocol"
-cd $ANYKERNEL3_DIR/
-zip -r9 $FINAL_KERNEL_ZIP * -x README $FINAL_KERNEL_ZIP
-cp $ANYKERNEL3_DIR/$FINAL_KERNEL_ZIP /home/raystef66/kernel/$FINAL_KERNEL_ZIP
+echo "[!] cleanning old configuration"
+make mrproper
 
-echo -e "$yellow**** Done, here is your checksum ****$nocol"
-cd ..
-rm -rf $ANYKERNEL3_DIR/$FINAL_KERNEL_ZIP
-rm -rf $ANYKERNEL3_DIR/Image.gz-dtb
-rm -rf $ANYKERNEL3_DIR/dtbo.img
-rm -rf out/
+echo "[!] executing defconfig"
+make ${args} umi_defconfig
 
-BUILD_END=$(date +"%s")
-DIFF=$(($BUILD_END - $BUILD_START))
-echo -e "$yellow Build completed in $(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds.$nocol"
-sha1sum $KERNELDIR/$FINAL_KERNEL_ZIP
+echo "[!] compiling"
+make ${args} 2>&1
