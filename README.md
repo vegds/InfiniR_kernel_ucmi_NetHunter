@@ -3,6 +3,7 @@
 ## KenrelSU
 Please run the following step brfore building.
 ```bash
+cd /path/to/kernel/source
 curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
 ```
 
@@ -38,7 +39,7 @@ I use kali-nethunter-project to package the kernel, and there are still other pa
 1. Clone the repository
 
 ```bash
-cd /path/to/kernel/root
+cd /path/to/kernel/source
 git clone https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project --depth=1
 ```
 
