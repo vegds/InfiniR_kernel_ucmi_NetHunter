@@ -1,5 +1,69 @@
-For Rom Devs: IF you want to inline this kernel in your Roms then do this before building ( In kernel root directory ):
+# Kernel Characteristics:
 
+## KenrelSU
+Please run the following step brfore building.
+```bash
 curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+```
+
+## NetHunter
+
+I've completed the steps below, so you don't have to do again.
+
+```bash
+cd /path/to/kernel/source
+git clone https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel.git
+patch -p1 < kali-nethunter-kernel/patches/4.19/add-wifi-injection-4.14.patch
+patch -p1 < kali-nethunter-kernel/patches/4.19/fix-ath9k-naming-conflict.patch
+```
+
+# For Rom Devs
+
+If you want to inline this kernel in your Roms then do this before building ( In kernel root directory ):
+
+```bash
+curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
+```
 
 Do this Everytime you clone the repo bcz this kernel has the support for Kernel-SU and it needs to be recloned and checkout to latest stable tag.
+
+**Clang**: [ZyCromerZ/Clang 17.0.0](https://github.com/ZyCromerZ/Clang/releases/tag/17.0.0-20230725-release)
+
+# For Kenrel Packaging
+
+I use kali-nethunter-project to package the kernel, and there are still other packaging tools that you can use.
+
+0. You need to build the kernel first.
+
+1. Clone the repository
+
+```bash
+cd /path/to/kernel/root
+git clone https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project --depth=1
+```
+
+2. Generate devices.cfg in kali-nethunter-project/nethunter-installer/devices/ .
+
+- This is my template
+
+```bash
+# Xiaomi 10 for HyperOS Android 14  
+[umi]
+author = "Yttehs"
+arch = arm64
+version = "v1.0"
+flasher = anykernel
+modules = 1
+slot_device = 0
+block = /dev/block/bootdevice/by-name/boot
+devicenames = umi,Mi10
+```
+
+3. Run my script.
+
+```bash
+cd /path/to/kernel/source
+./pack.sh
+```
+
+Finally, get the zip file in kali-nethunter-project/nethunter-installer/kernel-nethunter-YYYYMMDD_HHMMSS-umi-thirteen.zip .

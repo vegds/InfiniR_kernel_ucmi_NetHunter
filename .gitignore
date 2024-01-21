@@ -148,3 +148,5 @@ scripts/update_defconfig
 # inline git repositories
 /AnyKernel3/
 /KernelSU/
+/kali-nethunter-kernel/
+/kali-nethunter-project/
