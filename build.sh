@@ -54,7 +54,7 @@ cat << EOL > kali-nethunter-project/nethunter-installer/devices/devices.cfg
 [umi]
 author = "Yttehs"
 arch = arm64
-version = "v1.0"
+version = "v1.1"
 flasher = anykernel
 modules = 1
 slot_device = 0
@@ -114,9 +114,6 @@ LLVM_DIS=llvm-dis"
 
 echo "[!] cleanning old configuration"
 make mrproper
-
-echo "[!] cleanning old builds"
-rm -rf $(pwd)/${O}
 
 echo "[!] executing defconfig"
 make ${args} umi_nethunter_defconfig
