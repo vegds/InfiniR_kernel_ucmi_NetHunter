@@ -32,31 +32,16 @@ curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh
 
 Do this Everytime you clone the repo bcz this kernel has the support for Kernel-SU and it needs to be recloned and checkout to latest stable tag.
 
-# For Kenrel Packaging
+# For Kenrel Devs
 
-### I'v made a fully automated script from scratch to the packaged kernel.
+I'v made a fully automated script from scratch to the packaged kernel.
 
 ```bash
 cd /path/to/kernel/source
 ./build.sh
 ```
 
-### Or you want to package by youself:
-
-I use kali-nethunter-project to package the kernel, and there are still other packaging tools that you can use.
-
-0. You need to build the kernel first.
-
-1. Clone the repository
-
-```bash
-cd /path/to/kernel/source
-git clone https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project --depth=1
-```
-
-2. Generate devices.cfg in kali-nethunter-project/nethunter-installer/devices/ .
-
-- This is my template
+- My template
 
 ```bash
 # Xiaomi 10 for HyperOS Android 14  
@@ -69,13 +54,6 @@ modules = 1
 slot_device = 0
 block = /dev/block/bootdevice/by-name/boot
 devicenames = umi,Mi10
-```
-
-3. Run my script.
-
-```bash
-cd /path/to/kernel/source
-./pack.sh
 ```
 
 Finally, get the zip file in kali-nethunter-project/nethunter-installer/kernel-nethunter-YYYYMMDD_HHMMSS-umi-thirteen.zip .
