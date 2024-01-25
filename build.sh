@@ -72,26 +72,44 @@ cp $(pwd)/umi_nethunter_defconfig $(pwd)/arch/arm64/configs/umi_nethunter_defcon
 # Buiding Kernel & Module #
 # ===-----------------=== #
 
-echo "[+] start building"
+echo "[+] check toolchain"
 
-TOOLCHAIN_PATH="/home/yttehs/Project/Kernel-Dev/toolchains"
+CURRENT_PATH=$(pwd)
 
 CLANG_VERSION="17"
-GCC_VERSION="4.9"
+
+TOOLCHAINS_DIR="$(pwd)/../toolchains"
+
+CLANG_DIR="${TOOLCHAINS_DIR}/zyc-${CLANG_VERSION}"
+
+if [ ! -d "$CLANG_DIR" ]; then
+    echo "[!] clang 17.0.0 not found"
+    echo "[+] start downloading"
+    mkdir -p $CLANG_DIR
+    wget -P $CLANG_DIR https://github.com/ZyCromerZ/Clang/releases/download/17.0.0-20230725-release/Clang-17.0.0-20230725.tar.gz
+    tar -xzvf $CLANG_DIR/Clang-17.0.0-20230725.tar.gz -C $CLANG_DIR
+    rm "$CLANG_DIR/Clang-17.0.0-20230725.tar.gz"
+    echo "[+] finish"
+else
+    echo "[+] clang 17.0.0 already exits"
+fi
+
+CURRENT_PATH=$(pwd)
+
+cd $CLANG_DIR
+
+CLANG_PATH="${CLANG_DIR}/bin"
+
+cd $CURRENT_PATH
+
 O="out"
 ARCH="arm64"
-
-CLANG_PATH="${TOOLCHAIN_PATH}/zyc-${CLANG_VERSION}/bin"
-GCC32_PATH="${TOOLCHAIN_PATH}/gcc32-${GCC_VERSION}/bin"
-GCC_PATH="${TOOLCHAIN_PATH}/gcc-${GCC_VERSION}/bin"
 
 echo "[!] setting up environment"
 
 echo "[+] clang path: ${CLANG_PATH}"
-echo "[+] gcc32 path: ${GCC32_PATH}"
-echo "[+] gcc path: ${GCC_PATH}"
 
-export PATH="${CLANG_PATH}:${GCC32_PATH}:${GCC_PATH}:${PATH}"
+export PATH="${CLANG_PATH}:${PATH}"
 
 args="-j$(nproc --all) \
 O=${O} \
