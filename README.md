@@ -41,10 +41,10 @@ cd /path/to/kernel/source
 ./build.sh
 ```
 
-- My template
+- Template example (**kali-nethunter-project/nethunter-installer/devices/devices.cfg**)
 
 ```bash
-# Xiaomi 10 for HyperOS Android 14  
+# Xiaomi 10 for HyperOS Android 14
 [umi]
 author = "Yttehs"
 arch = arm64
