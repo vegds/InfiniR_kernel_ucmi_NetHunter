@@ -6,6 +6,8 @@
 # This script is used to build android kernel for mi10 #
 # ===----------------------------------------------=== #
 
+KERNEL_VERSION="1.2"
+
 # ===------------=== #
 # Clone Dependencies #
 # ===------------=== #
@@ -31,7 +33,7 @@ if [ "$fix_ath9k_naming_conflict" == "Y" ] || [ "$fix_ath9k_naming_conflict" == 
     patch -p1 < kali-nethunter-kernel/patches/4.19/fix-ath9k-naming-conflict.patch
 fi
 
-echo -n "[!] Adding patch fix-ath9k-naming-conflict.patch? [y/N]"
+echo -n "[!] Adding patch add-wifi-injection-4.14.patch? [y/N]"
 read -r add_wifi_injection
 if [ "$add_wifi_injection" == "Y" ] || [ "$add_wifi_injection" == "y" ]; then
     patch -p1 < kali-nethunter-kernel/patches/4.19/add-wifi-injection-4.14.patch
@@ -54,7 +56,7 @@ cat << EOL > kali-nethunter-project/nethunter-installer/devices/devices.cfg
 [umi]
 author = "Yttehs"
 arch = arm64
-version = "v1.1"
+version = "${KERNEL_VERSION}"
 flasher = anykernel
 modules = 1
 slot_device = 0
