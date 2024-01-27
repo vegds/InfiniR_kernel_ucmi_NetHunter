@@ -34,6 +34,16 @@ Do this Everytime you clone the repo bcz this kernel has the support for Kernel-
 
 # For Kenrel Devs
 
+## Before Building
+
+Please install all the dependencies
+
+```bash
+sudo pacman -S clang gcc llvm bc bison base-devel ccache curl flex gcc-multilib git git-lfs gnupg gperf imagemagick lib32-readline lib32-zlib elfutils lz4 sdl openssl libxml2 lzop pngcrush rsync schedtool squashfs-tools libxslt zip zlib lib32-ncurses wxgtk3 ncurses inetutils cpio
+```
+
+## Building Kernel
+
 I'v made a fully automated script from scratch to the packaged kernel.
 
 ```bash
