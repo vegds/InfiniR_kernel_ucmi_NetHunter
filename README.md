@@ -41,7 +41,7 @@ cd /path/to/kernel/source
 ./build.sh
 ```
 
-- Template example (**kali-nethunter-project/nethunter-installer/devices/devices.cfg**)
+- Template example (``kali-nethunter-project/nethunter-installer/devices/devices.cfg``)
 
 ```bash
 # Xiaomi 10 for HyperOS Android 14
@@ -56,4 +56,4 @@ block = /dev/block/bootdevice/by-name/boot
 devicenames = umi,Mi10
 ```
 
-Finally, get the zip file in kali-nethunter-project/nethunter-installer/kernel-nethunter-YYYYMMDD_HHMMSS-umi-thirteen.zip .
+Finally, get the zip file in ``kali-nethunter-project/nethunter-installer/kernel-nethunter-YYYYMMDD_HHMMSS-umi-thirteen.zip`` .
