@@ -6,7 +6,7 @@
 # This script is used to build android kernel for mi10 #
 # ===----------------------------------------------=== #
 
-KERNEL_VERSION="1.2"
+KERNEL_VERSION="2.0"
 
 # ===------------=== #
 # Clone Dependencies #
@@ -22,15 +22,15 @@ if [ -d "$NETHUNTER_KERNEL_DIR" ]; then
     cd $(pwd)/$NETHUNTER_KERNEL_DIR
     git pull
     cd ..
-else 
+else
     echo "[!] $NETHUNTER_KERNEL_DIR not exits, start cloning..."
     git clone https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel.git
 fi
 
-echo -n "[!] Adding patch fix-ath9k-naming-conflict.patch? [y/N]"
-read -r fix_ath9k_naming_conflict
-if [ "$fix_ath9k_naming_conflict" == "Y" ] || [ "$fix_ath9k_naming_conflict" == "y" ]; then
-    patch -p1 < kali-nethunter-kernel/patches/4.19/fix-ath9k-naming-conflict.patch
+echo -n "[!] Adding patch add-rtl88xxau-5.6.4.2-drivers? [y/N]"
+read -r add_rtl88xxau_drivers
+if [ "$add_rtl88xxau_drivers" == "Y" ] || [ "$add_rtl88xxau_drivers" == "y" ]; then
+    patch -p1 < kali-nethunter-kernel/patches/4.19/add-rtl88xxau-5.6.4.2-drivers.patch
 fi
 
 echo -n "[!] Adding patch add-wifi-injection-4.14.patch? [y/N]"
@@ -39,12 +39,18 @@ if [ "$add_wifi_injection" == "Y" ] || [ "$add_wifi_injection" == "y" ]; then
     patch -p1 < kali-nethunter-kernel/patches/4.19/add-wifi-injection-4.14.patch
 fi
 
+echo -n "[!] Adding patch fix-ath9k-naming-conflict.patch? [y/N]"
+read -r fix_ath9k_naming_conflict
+if [ "$fix_ath9k_naming_conflict" == "Y" ] || [ "$fix_ath9k_naming_conflict" == "y" ]; then
+    patch -p1 < kali-nethunter-kernel/patches/4.19/fix-ath9k-naming-conflict.patch
+fi
+
 if [ -d "$NETHUNTER_PROJECT_DIR" ]; then
     echo "[+] $NETHUNTER_PROJECT_DIR exits"
     cd $(pwd)/$NETHUNTER_PROJECT_DIR
     git pull
     cd ..
-else 
+else
     echo "[!] $NETHUNTER_PROJECT_DIR not exits, start cloning..."
     git clone https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-project --depth=1
 fi
@@ -53,7 +59,7 @@ mkdir -p $(pwd)/kali-nethunter-project/nethunter-installer/devices
 
 cat << EOL > kali-nethunter-project/nethunter-installer/devices/devices.cfg
 # Xiaomi 10 for HyperOS Android 14
-[umi]
+[ucmi]
 author = "Yttehs"
 arch = arm64
 version = "${KERNEL_VERSION}"
@@ -61,14 +67,14 @@ flasher = anykernel
 modules = 1
 slot_device = 0
 block = /dev/block/bootdevice/by-name/boot
-devicenames = umi,Mi10
+devicenames = umi,cmi,Mi10,Mi10pro
 EOL
 
 echo "[+] fetch KenrelSU"
 curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -
 
 echo "[+] copy defconfig"
-cp $(pwd)/umi_nethunter_defconfig $(pwd)/arch/arm64/configs/umi_nethunter_defconfig
+cp $(pwd)/ucmi_nethunter_defconfig $(pwd)/arch/arm64/configs/ucmi_nethunter_defconfig
 
 # ===-----------------=== #
 # Buiding Kernel & Module #
@@ -136,7 +142,7 @@ echo "[!] cleanning old configuration"
 make mrproper
 
 echo "[!] executing defconfig"
-make ${args} umi_nethunter_defconfig
+make ${args} ucmi_nethunter_defconfig
 
 echo "[!] compiling"
 make ${args} 2>&1
@@ -152,8 +158,8 @@ echo "[+] start packaging"
 
 O=out
 ARCH=arm64
-KERNEL_VERSION="4.19.305-InfiniR-NetHunter"
-DEVICE=umi
+KERNEL_VERSION="4.19.306-InfiniR-NetHunter/c84b067d4019"
+DEVICE=ucmi
 ANDROID_VERSION=thirteen
 
 echo "[+] create dirs"
@@ -162,14 +168,24 @@ mkdir -p $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERS
 
 echo "[!] clean pre files"
 rm -rf $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE/Image
+rm -rf $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE/Image-dtb
+rm -rf $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE/Image-dtb-hdr
 rm -rf $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE/dtbo.img
 rm -rf $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE/dtb
 rm -rf $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE/modules/system/lib/modules/*
 
 echo "[+] copy Image"
 cp $(pwd)/$O/arch/$ARCH/boot/Image $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE
+
+echo "[+] copy Image-dtb"
+cp $(pwd)/$O/arch/$ARCH/boot/Image-dtb $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE
+
+echo "[+] copy Image-dtb-hdr"
+cp $(pwd)/$O/arch/$ARCH/boot/Image-dtb-hdr $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE
+
 echo "[+] copy dtbo.img"
 cp $(pwd)/$O/arch/$ARCH/boot/dtbo.img $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE
+
 echo "[+] copy dtb"
 cp $(pwd)/$O/arch/$ARCH/boot/dtb $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE
 
@@ -178,7 +194,7 @@ rm -rf $(pwd)/$O/lib/modules/$KERNEL_VERSION/source
 rm -rf $(pwd)/$O/lib/modules/$KERNEL_VERSION/build
 
 echo "[+] copy modules"
-cp -r $(pwd)/$O/lib/modules/$KERNEL_VERSION $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE/modules/system/lib/modules/
+cp -r $(pwd)/$O/lib/modules/$KERNEL_VERSION/* $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE/modules/system/lib/modules/
 
 cd $(pwd)/kali-nethunter-project/nethunter-installer/
-python3 build.py -d umi --thirteen --kernel
+python3 build.py -d ucmi --thirteen --kernel

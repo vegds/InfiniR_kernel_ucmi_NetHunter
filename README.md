@@ -18,6 +18,7 @@ I've completed the steps below, so you don't have to do again.
 ```bash
 cd /path/to/kernel/source
 git clone https://gitlab.com/kalilinux/nethunter/build-scripts/kali-nethunter-kernel.git
+patch -p1 < kali-nethunter-kernel/patches/4.19/add-rtl88xxau-5.6.4.2-drivers.patch
 patch -p1 < kali-nethunter-kernel/patches/4.19/add-wifi-injection-4.14.patch
 patch -p1 < kali-nethunter-kernel/patches/4.19/fix-ath9k-naming-conflict.patch
 ```
@@ -55,15 +56,15 @@ cd /path/to/kernel/source
 
 ```bash
 # Xiaomi 10 for HyperOS Android 14
-[umi]
+[ucmi]
 author = "Yttehs"
 arch = arm64
-version = "v1.0"
+version = "${KERNEL_VERSION}"
 flasher = anykernel
 modules = 1
 slot_device = 0
 block = /dev/block/bootdevice/by-name/boot
-devicenames = umi,Mi10
+devicenames = umi,cmi,Mi10,Mi10pro
 ```
 
-Finally, get the zip file in ``kali-nethunter-project/nethunter-installer/kernel-nethunter-YYYYMMDD_HHMMSS-umi-thirteen.zip`` .
+Finally, get the zip file in ``kali-nethunter-project/nethunter-installer/kernel-nethunter-YYYYMMDD_HHMMSS-ucmi-thirteen.zip``.
