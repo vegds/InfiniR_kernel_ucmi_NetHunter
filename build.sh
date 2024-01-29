@@ -158,7 +158,7 @@ echo "[+] start packaging"
 
 O=out
 ARCH=arm64
-KERNEL_VERSION="4.19.306-InfiniR-NetHunter/c84b067d4019"
+KERNEL_VERSION="4.19.306-InfiniR-NetHunter"
 DEVICE=ucmi
 ANDROID_VERSION=thirteen
 
