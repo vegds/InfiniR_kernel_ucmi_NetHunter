@@ -6,7 +6,7 @@
 # This script is used to build android kernel for mi10 #
 # ===----------------------------------------------=== #
 
-KERNEL_VERSION="2.0"
+KERNEL_VERSION="2.1"
 
 # ===------------=== #
 # Clone Dependencies #
@@ -183,8 +183,8 @@ cp $(pwd)/$O/arch/$ARCH/boot/Image-dtb $(pwd)/kali-nethunter-project/nethunter-i
 echo "[+] copy Image-dtb-hdr"
 cp $(pwd)/$O/arch/$ARCH/boot/Image-dtb-hdr $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE
 
-echo "[+] copy dtbo.img"
-cp $(pwd)/$O/arch/$ARCH/boot/dtbo.img $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE
+# echo "[+] copy dtbo.img"
+# cp $(pwd)/$O/arch/$ARCH/boot/dtbo.img $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE
 
 echo "[+] copy dtb"
 cp $(pwd)/$O/arch/$ARCH/boot/dtb $(pwd)/kali-nethunter-project/nethunter-installer/devices/$ANDROID_VERSION/$DEVICE
