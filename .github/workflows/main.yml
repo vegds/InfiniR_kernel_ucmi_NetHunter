@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-kernel:
+    name: Build Kernel
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Build
+        uses: dabao1955/kernel_build_action@main
+        with:
+          kernel-url: https://github.com/vegds/InfiniR_kernel_ucmi_NetHunter
+          branch: 14.0-umi
+          config: ucmi_nethunter_defconfig
+          arch: arm64
+          aosp-gcc: true
+          aosp-clang: true
+          python-2.7: true
+          android-version: 12
+          aosp-clang-version: r383902
