@@ -13,10 +13,11 @@ jobs:
         with:
           kernel-url: https://github.com/vegds/InfiniR_kernel_ucmi_NetHunter
           branch: 14.0-umi
-          config: ucmi_nethunter_defconfig
+          config: ucmi_defconfig
           arch: arm64
           aosp-gcc: true
           aosp-clang: true
+          overlayfs: true
           python-2.7: true
-          android-version: 12
+          android-version: 13
           aosp-clang-version: r383902
