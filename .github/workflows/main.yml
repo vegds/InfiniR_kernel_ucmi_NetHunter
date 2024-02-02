@@ -18,6 +18,6 @@ jobs:
           aosp-gcc: true
           aosp-clang: true
           overlayfs: true
+          release: true
           python-2.7: true
           android-version: 13
-          aosp-clang-version: r383902
