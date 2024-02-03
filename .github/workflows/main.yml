@@ -15,8 +15,11 @@ jobs:
           branch: 14.0-umi
           config: ucmi_defconfig
           arch: arm64
-          aosp-gcc: true
-          aosp-clang: true
+          aosp-gcc: false
+          aosp-clang: false
+          other-clan: true
+          other-clang-url: https://github.com/ZyCromerZ/Clang
+          other-clang-branch: 17.0.0-20230725-release
           overlayfs: true
           release: true
           python-2.7: true
