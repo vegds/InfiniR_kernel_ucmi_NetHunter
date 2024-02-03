@@ -13,7 +13,7 @@ jobs:
         with:
           kernel-url: https://github.com/vegds/InfiniR_kernel_ucmi_NetHunter
           branch: 14.0-umi
-          config: ucmi_defconfig
+          config: ucmi_nethunter_defconfig
           arch: arm64
           aosp-gcc: false
           aosp-clang: false
